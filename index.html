@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>The Skibideria</title>
+    <title>Atendente Virtual - Hamburgueria</title>
 
     <style>
+        /* ===== TEMA (edite as cores aqui) ===== */
+        :root {
+            --primary: #d84315;
+            --primary-dark: #a82f0c;
+            --secondary: #ffb300;
+            --accent: #d84315;
+            --bg-chat: #fbf6f1;
+            --text: #333333;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,7 +26,7 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #2e4347, #c0d1c2, #fff8d4);
+            background: linear-gradient(135deg, var(--secondary), #ffd980);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -38,7 +48,7 @@
         /* CABEÇALHO */
 
         .chat-header {
-            background: linear-gradient(135deg, #1565c0, #1976d2);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
             padding: 20px;
             display: flex;
@@ -50,7 +60,7 @@
             width: 48px;
             height: 48px;
             background: white;
-            color: #5cbf4c;
+            color: var(--primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -83,7 +93,7 @@
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background: #81df6d;
+            background: var(--bg-chat);
         }
 
         .message {
@@ -109,15 +119,16 @@
 
         .bot .message-content {
             background: white;
-            color: #333;
+            color: var(--text);
             border-bottom-left-radius: 4px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
         .user .message-content {
-            background: #a7ff8e;
+            background: var(--primary);
             color: white;
             border-bottom-right-radius: 4px;
+            word-break: break-word;
         }
 
         .time {
@@ -125,6 +136,31 @@
             font-size: 10px;
             margin-top: 5px;
             opacity: 0.6;
+        }
+
+        /* BOTÕES DE AÇÃO DENTRO DA RESPOSTA */
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .action {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 7px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action:hover {
+            background: var(--primary-dark);
         }
 
         /* OPÇÕES */
@@ -148,9 +184,9 @@
         }
 
         .option {
-            border: 1px solid #c2e4cb;
+            border: 1px solid var(--primary);
             background: white;
-            color: #1976d2;
+            color: var(--primary);
             padding: 8px 11px;
             border-radius: 20px;
             cursor: pointer;
@@ -159,7 +195,7 @@
         }
 
         .option:hover {
-            background: #1976d2;
+            background: var(--primary);
             color: white;
         }
 
@@ -178,10 +214,18 @@
             flex: 1;
             border: none;
             outline: none;
-            background: #f1f3f6;
+            background: #f4f1ee;
             border-radius: 25px;
             padding: 13px 17px;
             font-size: 14px;
+        }
+
+        .chat-input input:focus-visible,
+        .option:focus-visible,
+        .action:focus-visible,
+        .send-button:focus-visible {
+            outline: 2px solid var(--secondary);
+            outline-offset: 2px;
         }
 
         .send-button {
@@ -189,7 +233,7 @@
             height: 45px;
             border: none;
             border-radius: 50%;
-            background: #1976d2;
+            background: var(--primary);
             color: white;
             cursor: pointer;
             font-size: 18px;
@@ -197,7 +241,7 @@
         }
 
         .send-button:hover {
-            background: #0d47a1;
+            background: var(--primary-dark);
             transform: scale(1.05);
         }
 
@@ -208,7 +252,7 @@
             font-size: 12px;
             color: #777;
             padding: 0 20px 8px;
-            background: #f5f7fb;
+            background: var(--bg-chat);
         }
 
         /* RESPONSIVO */
@@ -234,16 +278,14 @@
     <!-- CABEÇALHO -->
     <div class="chat-header">
 
-        <div class="school-icon">
-            🎓
-        </div>
+        <div class="school-icon" id="headerIcon">🍔</div>
 
         <div class="header-info">
-            <h2>The Skibideria Atendente</h2>
+            <h2 id="botName">Atendente Virtual</h2>
 
             <div class="status">
                 <span class="online"></span>
-                Online • Escola
+                <span id="statusText">Online</span>
             </div>
         </div>
 
@@ -251,51 +293,7 @@
 
 
     <!-- MENSAGENS -->
-    <div class="chat-messages" id="chatMessages">
-
-        <div class="message bot">
-
-            <div class="message-content">
-
-                Olá! 👋
-
-                <br><br>
-
-                Seja bem-vindo(a) ao atendimento virtual da nossa Hamburgueria The Skibideria.
-
-                <br><br>
-
-                Como posso ajudar você?
-
-                <span class="time">16:08</span>
-
-            </div>
-
-        </div>
-
-
-        <div class="message bot">
-
-            <div class="message-content">
-
-                Você pode perguntar sobre:
-
-                <br><br>
-
-                🍔 Lanches e Bebidas<br>
-                📝 Atendimento<br>
-                📅 Horário<br>
-                💰 Pagamento<br>
-                📍 Localização<br>
-                📞 Contato
-
-                <span class="time">16:08</span>
-
-            </div>
-
-        </div>
-
-    </div>
+    <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
 
 
     <!-- INDICADOR -->
@@ -309,25 +307,7 @@
 
         <p>Escolha uma opção:</p>
 
-        <div class="options">
-
-            <button class="option" onclick="quickMessage('Quero informações sobre matrícula')">
-                📝 Atendimento
-            </button>
-
-            <button class="option" onclick="quickMessage('Quais cursos estão disponíveis?')">
-                🍔 Lanches e Bebidas
-            </button>
-
-            <button class="option" onclick="quickMessage('Quais são os horários das aulas?')">
-                📅 Horários
-            </button>
-
-            <button class="option" onclick="quickMessage('Qual o valor da mensalidade?')">
-                💰 Pagamento
-            </button>
-
-        </div>
+        <div class="options" id="quickOptions"></div>
 
     </div>
 
@@ -339,10 +319,11 @@
             type="text"
             id="messageInput"
             placeholder="Digite sua mensagem..."
-            onkeypress="handleKey(event)"
+            aria-label="Digite sua mensagem"
+            autocomplete="off"
         >
 
-        <button class="send-button" onclick="sendMessage()">
+        <button class="send-button" id="sendButton" aria-label="Enviar mensagem">
             ➤
         </button>
 
@@ -352,6 +333,70 @@
 
 
 <script>
+
+    /* =====================================================
+       CONFIGURAÇÃO DO NEGÓCIO
+       Edite apenas este objeto para atualizar dados,
+       cardápio e textos. A lógica fica mais abaixo.
+       ===================================================== */
+
+    const CONFIG = {
+        nome: "[NOME DA HAMBURGUERIA]",
+        atendente: "[Burger Bot]",
+        icone: "🍔",
+        endereco: "[ENDEREÇO COMPLETO]",
+        telefone: "[(00) 00000-0000]",
+        whatsapp: "5500000000000",          // somente números, com DDI e DDD
+        instagram: "",                      // opcional, ex.: "https://instagram.com/seuperfil"
+        horario: "[Ter a Dom, 18h às 23h30 • Segunda fechado]",
+        atendimento: "[Salão, retirada e delivery]",
+        entrega: {
+            taxa: "R$ 00,00",
+            area: "[bairros atendidos]",
+            tempo: "[40 a 60 min]"
+        },
+        pagamento: "[Pix, cartão de crédito/débito e dinheiro]",
+        vegetariano: "[Temos opção vegetariana: nome do burger]",
+
+        cardapio: {
+            "🍔 Burgers": [
+                { nome: "[Burger 1]", desc: "[descrição curta]", preco: "R$ 00,00" },
+                { nome: "[Burger 2]", desc: "[descrição curta]", preco: "R$ 00,00" }
+            ],
+            "🍟 Acompanhamentos": [
+                { nome: "[Batata frita]", preco: "R$ 00,00" }
+            ],
+            "🥤 Bebidas": [
+                { nome: "[Refrigerante lata]", preco: "R$ 00,00" }
+            ],
+            "🍰 Sobremesas": [
+                { nome: "[Sobremesa]", preco: "R$ 00,00" }
+            ],
+            "➕ Adicionais": [
+                { nome: "[Bacon]", preco: "R$ 00,00" }
+            ]
+        },
+
+        promocoes: [
+            { nome: "[Combo 1]", desc: "[burger + batata + bebida]", preco: "R$ 00,00" }
+        ],
+
+        // Botões rápidos: rótulo exibido e mensagem enviada
+        opcoesRapidas: [
+            { rotulo: "🍔 Cardápio",   mensagem: "Quero ver o cardápio" },
+            { rotulo: "🎁 Promoções",  mensagem: "Quais são as promoções?" },
+            { rotulo: "🛵 Fazer pedido", mensagem: "Quero fazer um pedido" },
+            { rotulo: "🕐 Horários",   mensagem: "Qual o horário de funcionamento?" },
+            { rotulo: "📍 Entrega",    mensagem: "Vocês fazem entrega?" }
+        ]
+    };
+
+
+    /* =====================================================
+       FUNÇÕES AUXILIARES
+       ===================================================== */
+
+    let busy = false;   // impede enviar enquanto o bot "digita"
 
     function getTime() {
 
@@ -365,21 +410,86 @@
     }
 
 
+    // Minúsculas e sem acentos, para comparar palavras-chave
+    function normalize(text) {
+
+        return text
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+
+    }
+
+
+    // Verifica palavra inteira; "entreg*" aceita qualquer final (entrega, entregam...)
+    function hasKeyword(message, keyword) {
+
+        const prefix = keyword.endsWith("*");
+        const word = keyword.replace("*", "").replace(/\s+/g, "\\s+");
+        const regex = new RegExp("\\b" + word + (prefix ? "\\w*" : "\\b"));
+
+        return regex.test(message);
+
+    }
+
+
+    function whatsappLink(texto) {
+
+        return "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(texto);
+
+    }
+
+
+    // Gera o HTML dos botões de ação de uma resposta
+    function buildActions(actions) {
+
+        if (!actions || actions.length === 0) {
+            return "";
+        }
+
+        const items = actions.map(a => {
+
+            if (a.url) {
+                return `<a class="action" href="${a.url}" target="_blank" rel="noopener">${a.label}</a>`;
+            }
+
+            return `<button class="action" type="button" data-message="${a.message}">${a.label}</button>`;
+
+        }).join("");
+
+        return `<div class="actions">${items}</div>`;
+
+    }
+
+
+    /* =====================================================
+       MENSAGENS
+       ===================================================== */
+
+    // type "user": texto puro (seguro contra XSS)
+    // type "bot": aceita HTML controlado por nós
     function addMessage(text, type) {
 
         const chat = document.getElementById("chatMessages");
 
         const message = document.createElement("div");
-
         message.classList.add("message", type);
 
-        message.innerHTML = `
-            <div class="message-content">
-                ${text}
-                <span class="time">${getTime()}</span>
-            </div>
-        `;
+        const content = document.createElement("div");
+        content.classList.add("message-content");
 
+        if (type === "user") {
+            content.textContent = text;
+        } else {
+            content.innerHTML = text;
+        }
+
+        const time = document.createElement("span");
+        time.classList.add("time");
+        time.textContent = getTime();
+
+        content.appendChild(time);
+        message.appendChild(content);
         chat.appendChild(message);
 
         chat.scrollTop = chat.scrollHeight;
@@ -393,7 +503,7 @@
 
         const text = input.value.trim();
 
-        if (text === "") {
+        if (text === "" || busy) {
             return;
         }
 
@@ -408,171 +518,13 @@
 
     function quickMessage(text) {
 
+        if (busy) {
+            return;
+        }
+
         addMessage(text, "user");
 
         simulateResponse(text);
-
-    }
-
-
-    function simulateResponse(text) {
-
-        const typing = document.getElementById("typing");
-
-        typing.style.display = "block";
-
-        setTimeout(() => {
-
-            typing.style.display = "none";
-
-            let response = "";
-
-            const message = text.toLowerCase();
-
-
-            if (
-                message.includes("matrícula") ||
-                message.includes("matricula")
-            ) {
-
-                response = `
-                    📝 <strong>Matrículas</strong><br><br>
-
-                    Para realizar sua matrícula, é necessário
-                    apresentar os documentos solicitados pela escola.
-
-                    <br><br>
-
-                    Posso informar os documentos necessários ou
-                    encaminhar você para a secretaria.
-                `;
-
-            }
-
-            else if (
-                message.includes("curso") ||
-                message.includes("disciplina")
-            ) {
-
-                response = `
-                    📚 <strong>Cursos disponíveis</strong><br><br>
-
-                    Atualmente temos cursos nas áreas de
-                    Administração, Informática, Tecnologia e
-                    Desenvolvimento Profissional.
-
-                    <br><br>
-
-                    Digite o nome do curso para receber mais informações.
-                `;
-
-            }
-
-            else if (
-                message.includes("horário") ||
-                message.includes("horario") ||
-                message.includes("aula")
-            ) {
-
-                response = `
-                    📅 <strong>Horários</strong><br><br>
-
-                    As aulas acontecem de segunda a sexta-feira.
-
-                    <br><br>
-
-                    Manhã: 08:00 às 12:00<br>
-                    Tarde: 13:00 às 17:00<br>
-                    Noite: 19:00 às 22:00
-                `;
-
-            }
-
-            else if (
-                message.includes("mensalidade") ||
-                message.includes("preço") ||
-                message.includes("valor")
-            ) {
-
-                response = `
-                    💰 <strong>Mensalidades</strong><br><br>
-
-                    O valor da mensalidade depende do curso
-                    escolhido.
-
-                    <br><br>
-
-                    Informe o curso que deseja consultar
-                    para receber o valor correspondente.
-                `;
-
-            }
-
-            else if (
-                message.includes("local") ||
-                message.includes("endereço") ||
-                message.includes("endereco")
-            ) {
-
-                response = `
-                    📍 <strong>Localização</strong><br><br>
-
-                    Nossa escola está localizada na região central
-                    da cidade.
-
-                    <br><br>
-
-                    Para visualizar o endereço completo,
-                    entre em contato com nossa secretaria.
-                `;
-
-            }
-
-            else if (
-                message.includes("oi") ||
-                message.includes("olá") ||
-                message.includes("ola") ||
-                message.includes("bom dia") ||
-                message.includes("boa tarde") ||
-                message.includes("boa noite")
-            ) {
-
-                response = `
-                    Olá! 😊
-
-                    <br><br>
-
-                    É um prazer atender você.
-
-                    <br><br>
-
-                    Como posso ajudar?
-                `;
-
-            }
-
-            else {
-
-                response = `
-                    🤖 Entendi sua mensagem.
-
-                    <br><br>
-
-                    Ainda estou aprendendo a responder essa
-                    pergunta.
-
-                    <br><br>
-
-                    Você pode perguntar sobre
-                    <strong>matrícula, cursos, horários,
-                    mensalidades ou localização</strong>.
-                `;
-
-            }
-
-            addMessage(response, "bot");
-
-        }, 1200);
 
     }
 
@@ -586,6 +538,245 @@
         }
 
     }
+
+
+    /* =====================================================
+       RESPOSTAS DO ATENDENTE
+       Ordem do array = prioridade. A saudação fica por último.
+       Use "*" no fim da palavra para aceitar variações.
+       ===================================================== */
+
+    const verCardapio = { label: "🍔 Ver cardápio", message: "Quero ver o cardápio" };
+    const fazerPedido = { label: "💬 Pedir no WhatsApp", url: whatsappLink("Olá! Gostaria de fazer um pedido.") };
+
+    const INTENTS = [
+
+        {
+            nome: "pedido",
+            keywords: ["pedido*", "pedir", "comprar", "encomend*", "reserv*"],
+            response: () => `
+                🛵 <strong>Fazer pedido</strong><br><br>
+                Atendimento: ${CONFIG.atendimento}.<br><br>
+                O jeito mais rápido é pelo nosso WhatsApp: ${CONFIG.telefone}.
+            `,
+            actions: [fazerPedido, verCardapio]
+        },
+
+        {
+            nome: "delivery",
+            keywords: ["entreg*", "delivery", "frete", "taxa", "motoboy"],
+            response: () => `
+                🛵 <strong>Delivery</strong><br><br>
+                Taxa de entrega: ${CONFIG.entrega.taxa}<br>
+                Região atendida: ${CONFIG.entrega.area}<br>
+                Tempo estimado: ${CONFIG.entrega.tempo}
+            `,
+            actions: [fazerPedido]
+        },
+
+        {
+            nome: "promocoes",
+            keywords: ["promo*", "combo*", "oferta*", "desconto*"],
+            response: () => `
+                🎁 <strong>Promoções e combos</strong><br><br>
+                ${CONFIG.promocoes.map(p =>
+                    `<strong>${p.nome}</strong> – ${p.desc}<br>${p.preco}`
+                ).join("<br><br>")}
+            `,
+            actions: [fazerPedido]
+        },
+
+        {
+            nome: "vegetariano",
+            keywords: ["vegetarian*", "vegan*", "vegano*", "sem carne"],
+            response: () => `
+                🌱 <strong>Opções vegetarianas</strong><br><br>
+                ${CONFIG.vegetariano}
+            `,
+            actions: [verCardapio]
+        },
+
+        {
+            nome: "cardapio",
+            keywords: ["cardapio", "menu", "burger*", "hamburguer*", "lanche*", "bebida*", "sobremesa*", "batata*", "preco*", "valor*", "quanto"],
+            response: () => {
+
+                const secoes = Object.entries(CONFIG.cardapio).map(([titulo, itens]) =>
+                    `<strong>${titulo}</strong><br>` +
+                    itens.map(i =>
+                        `• ${i.nome}${i.desc ? " – " + i.desc : ""} <strong>${i.preco}</strong>`
+                    ).join("<br>")
+                ).join("<br><br>");
+
+                return `🍔 <strong>Nosso cardápio</strong><br><br>${secoes}`;
+
+            },
+            actions: [fazerPedido]
+        },
+
+        {
+            nome: "pagamento",
+            keywords: ["pagamento", "pagar", "pix", "cartao", "dinheiro", "credito", "debito"],
+            response: () => `
+                💳 <strong>Formas de pagamento</strong><br><br>
+                ${CONFIG.pagamento}
+            `
+        },
+
+        {
+            nome: "horario",
+            keywords: ["horario*", "aberto", "abre", "fecha", "funcionamento", "hora*"],
+            response: () => `
+                🕐 <strong>Horário de funcionamento</strong><br><br>
+                ${CONFIG.horario}
+            `
+        },
+
+        {
+            nome: "localizacao",
+            keywords: ["local*", "endereco", "onde", "chegar", "mapa"],
+            response: () => `
+                📍 <strong>Localização</strong><br><br>
+                ${CONFIG.endereco}
+            `,
+            actions: [{
+                label: "🗺️ Abrir no mapa",
+                url: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(CONFIG.endereco)
+            }]
+        },
+
+        {
+            nome: "contato",
+            keywords: ["contato", "telefone", "whatsapp", "zap", "ligar", "instagram"],
+            response: () => `
+                📞 <strong>Contato</strong><br><br>
+                Telefone/WhatsApp: ${CONFIG.telefone}
+                ${CONFIG.instagram ? `<br>Instagram: <a href="${CONFIG.instagram}" target="_blank" rel="noopener">${CONFIG.instagram}</a>` : ""}
+            `,
+            actions: [{ label: "💬 Falar no WhatsApp", url: whatsappLink("Olá! Vim pelo atendimento virtual.") }]
+        },
+
+        {
+            nome: "saudacao",
+            keywords: ["oi", "ola", "bom dia", "boa tarde", "boa noite", "e ai", "opa"],
+            response: () => `
+                Olá! 😊<br><br>
+                É um prazer atender você na <strong>${CONFIG.nome}</strong>.<br><br>
+                Quer ver o cardápio ou fazer um pedido?
+            `,
+            actions: [verCardapio, fazerPedido]
+        }
+
+    ];
+
+
+    function findResponse(text) {
+
+        const message = normalize(text);
+
+        const intent = INTENTS.find(i =>
+            i.keywords.some(k => hasKeyword(message, k))
+        );
+
+        if (intent) {
+            return intent.response() + buildActions(intent.actions);
+        }
+
+        // Resposta padrão
+        return `
+            🤖 Não entendi muito bem essa pergunta.<br><br>
+            Você pode perguntar sobre
+            <strong>cardápio, promoções, pedidos, entrega, horários
+            ou localização</strong>.
+        ` + buildActions([verCardapio, fazerPedido]);
+
+    }
+
+
+    function simulateResponse(text) {
+
+        const typing = document.getElementById("typing");
+        const chat = document.getElementById("chatMessages");
+
+        busy = true;
+
+        typing.style.display = "block";
+        chat.scrollTop = chat.scrollHeight;
+
+        setTimeout(() => {
+
+            typing.style.display = "none";
+
+            addMessage(findResponse(text), "bot");
+
+            busy = false;
+
+        }, 1200);
+
+    }
+
+
+    /* =====================================================
+       INICIALIZAÇÃO
+       ===================================================== */
+
+    function init() {
+
+        document.title = "Atendente Virtual - " + CONFIG.nome;
+        document.getElementById("headerIcon").textContent = CONFIG.icone;
+        document.getElementById("botName").textContent = CONFIG.atendente;
+        document.getElementById("statusText").textContent = "Online • " + CONFIG.nome;
+
+        // Botões rápidos
+        const options = document.getElementById("quickOptions");
+
+        CONFIG.opcoesRapidas.forEach(o => {
+
+            const button = document.createElement("button");
+            button.className = "option";
+            button.type = "button";
+            button.textContent = o.rotulo;
+            button.addEventListener("click", () => quickMessage(o.mensagem));
+
+            options.appendChild(button);
+
+        });
+
+        // Eventos de envio
+        document.getElementById("sendButton").addEventListener("click", sendMessage);
+        document.getElementById("messageInput").addEventListener("keydown", handleKey);
+
+        // Botões de ação dentro das respostas (delegação de evento)
+        document.getElementById("chatMessages").addEventListener("click", event => {
+
+            const button = event.target.closest("button.action");
+
+            if (button) {
+                quickMessage(button.dataset.message);
+            }
+
+        });
+
+        // Mensagens iniciais
+        addMessage(`
+            Olá! 👋<br><br>
+            Seja bem-vindo(a) à <strong>${CONFIG.nome}</strong>.<br><br>
+            Como posso ajudar você?
+        `, "bot");
+
+        addMessage(`
+            Você pode perguntar sobre:<br><br>
+            🍔 Cardápio<br>
+            🛵 Pedidos e delivery<br>
+            💰 Preços e promoções<br>
+            🕐 Horários<br>
+            📍 Localização<br>
+            📞 Contato
+        `, "bot");
+
+    }
+
+    init();
 
 </script>
 
